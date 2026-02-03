@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATS-Friendly Resume Builder</title>
+    <meta name="description"
+        content="Build a professional, ATS-friendly resume in minutes. Real-time preview and PDF export.">
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:wght@300;400;700&display=swap"
+        rel="stylesheet">
+    <!-- SortableJS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="drag_styles.css">
+
+    <!-- HTML2PDF Library (Removed) -->
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar / Editor -->
+        <aside class="editor-panel">
+            <header class="editor-header">
+                <div class="logo">
+                    <i class="fa-solid fa-file-invoice"></i>
+                    <span>Arshu's App</span>
+                </div>
+                <p>Build your ATS-ready resume</p>
+            </header>
+
+            <form id="resumeForm" class="resume-form">
+                <!-- Layout Reordering -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <h3><i class="fa-solid fa-arrow-down-up-across-line"></i> Reorder Sections</h3>
+                        <i class="fa-solid fa-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="section-content">
+                        <p style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 10px;">Drag to rearrange resume
+                            sections.</p>
+                        <ul id="sectionSortableList" style="list-style: none; padding: 0;">
+                            <li data-id="previewSummarySection" class="sortable-item"><i
+                                    class="fa-solid fa-grip-lines"></i> Summary</li>
+                            <li data-id="previewExperienceSection" class="sortable-item"><i
+                                    class="fa-solid fa-grip-lines"></i> Experience</li>
+                            <li data-id="previewEducationSection" class="sortable-item"><i
+                                    class="fa-solid fa-grip-lines"></i> Education</li>
+                            <li data-id="previewSkillsSection" class="sortable-item"><i
+                                    class="fa-solid fa-grip-lines"></i> Skills</li>
+                            <li data-id="previewCustomSections" class="sortable-item"><i
+                                    class="fa-solid fa-grip-lines"></i> Custom Sections</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Personal Info -->
+                <div class="form-section expanded">
+                    <div class="section-header">
+                        <h3><i class="fa-solid fa-user"></i> Personal Info</h3>
+                        <i class="fa-solid fa-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="section-content">
+                        <div class="input-group">
+                            <label for="fullName">Full Name</label>
+                            <input type="text" id="fullName" placeholder="John Doe" value="John Doe">
+                        </div>
+                        <div class="input-group">
+                            <label for="jobTitle">Job Title</label>
+                            <input type="text" id="jobTitle" placeholder="Software Engineer" value="Software Engineer">
+                        </div>
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" placeholder="john@example.com" value="john@example.com">
+                            </div>
+                            <div class="input-group">
+                                <label for="phone">Phone</label>
+                                <input type="tel" id="phone" placeholder="+1 234 567 890" value="+1 234 567 890">
+                            </div>
+                        </div>
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label for="linkedin">LinkedIn URL</label>
+                                <input type="url" id="linkedin" placeholder="linkedin.com/in/john"
+                                    value="linkedin.com/in/johndoe">
+                            </div>
+                            <div class="input-group">
+                                <label for="location">Location</label>
+                                <input type="text" id="location" placeholder="City, Country" value="New York, USA">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Professional Summary -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <h3><i class="fa-solid fa-align-left"></i> Summary</h3>
+                        <i class="fa-solid fa-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="section-content">
+                        <div class="input-group">
+                            <label for="summary">Professional Summary</label>
+                            <textarea id="summary" rows="4"
+                                placeholder="Brief summary of your career...">Experienced software engineer with a passion for building scalable web applications.</textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Experience -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <h3><i class="fa-solid fa-briefcase"></i> Experience</h3>
+                        <i class="fa-solid fa-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="section-content">
+                        <div id="experienceList">
+                            <!-- Experience items will be added here -->
+                        </div>
+                        <button type="button" class="add-btn" id="addExperienceBtn"><i class="fa-solid fa-plus"></i> Add
+                            Position</button>
+                    </div>
+                </div>
+
+                <!-- Education -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <h3><i class="fa-solid fa-graduation-cap"></i> Education</h3>
+                        <i class="fa-solid fa-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="section-content">
+                        <div id="educationList">
+                            <!-- Education items will be added here -->
+                        </div>
+                        <button type="button" class="add-btn" id="addEducationBtn"><i class="fa-solid fa-plus"></i> Add
+                            Education</button>
+                    </div>
+                </div>
+
+                <!-- Custom Sections -->
+                <div id="customSectionsContainer">
+                    <!-- Custom sections form items will appear here -->
+                </div>
+
+                <button type="button" class="add-btn mb-15" id="addCustomSectionBtn" style="margin-bottom: 20px;"><i
+                        class="fa-circle-plus fa-solid"></i> Add Custom Section</button>
+
+
+                <!-- Skills -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <h3><i class="fa-solid fa-code"></i> Skills</h3>
+                        <i class="fa-solid fa-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="section-content">
+                        <div class="input-group">
+                            <label for="skills">Key Skills (Comma separated)</label>
+                            <textarea id="skills" rows="3"
+                                placeholder="JavaScript, Python, React, Team Leadership, Project Management">JavaScript, HTML5, CSS3, Python, React.js, Node.js, Git, Agile Methodologies</textarea>
+                            <div
+                                style="margin-top: 10px; font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; justify-content: space-between;">
+                                <span>Tip: Clear text to hide section</span>
+                                <button type="button" id="toggleSkillsBtn" class="add-btn"
+                                    style="width: auto; padding: 5px 10px;"
+                                    onclick="document.getElementById('skills').value=''; document.getElementById('skills').dispatchEvent(new Event('input'));">Clear
+                                    & Hide</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <div class="action-footer">
+                <button id="downloadBtn" class="primary-btn"><i class="fa-solid fa-download"></i> Download PDF</button>
+                <div class="app-footer-text"
+                    style="text-align: center; margin-top: 15px; font-size: 0.75rem; color: #94a3b8;">
+                    @ Arshu's vibe coding app - <span id="currentYear"></span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Preview Area -->
+        <main class="preview-area">
+            <div class="preview-toolbar">
+                <div class="zoom-controls">
+                    <button id="zoomOut"><i class="fa-solid fa-minus"></i></button>
+                    <span id="zoomLevel">100%</span>
+                    <button id="zoomIn"><i class="fa-solid fa-plus"></i></button>
+                </div>
+                <div class="theme-toggles">
+                    <!-- Maybe template switcher later -->
+                    <span class="preview-label">Live Preview (A4)</span>
+                </div>
+            </div>
+
+            <!-- The Resume -->
+            <div class="resume-container-wrapper">
+                <div id="resumePreview" class="resume-sheet">
+                    <!-- Resume Header -->
+                    <header class="resume-header">
+                        <h1 id="previewName">John Doe</h1>
+                        <p id="previewTitle" class="resume-job-title">Software Engineer</p>
+                        <div class="contact-info">
+                            <span id="previewLocation">New York, USA</span>
+                            <span class="separator">•</span>
+                            <span id="previewEmail">john@example.com</span>
+                            <span class="separator">•</span>
+                            <span id="previewPhone">+1 234 567 890</span>
+                            <span class="separator">•</span>
+                            <span id="previewLinkedin">linkedin.com/in/johndoe</span>
+                        </div>
+                    </header>
+
+                    <!-- Summary -->
+                    <section class="resume-section" id="previewSummarySection">
+                        <h2 class="section-title">Professional Summary</h2>
+                        <hr>
+                        <p id="previewSummary">Experienced software engineer with a passion for building scalable web
+                            applications.</p>
+                    </section>
+
+                    <!-- Experience -->
+                    <section class="resume-section" id="previewExperienceSection">
+                        <h2 class="section-title">Work Experience</h2>
+                        <hr>
+                        <div id="previewExperienceList">
+                            <!-- Populated by JS -->
+                        </div>
+                    </section>
+
+                    <!-- Education -->
+                    <section class="resume-section" id="previewEducationSection">
+                        <h2 class="section-title">Education</h2>
+                        <hr>
+                        <div id="previewEducationList">
+                            <!-- Populated by JS -->
+                        </div>
+                    </section>
+
+                    <!-- Skills -->
+                    <!-- Skills -->
+                    <section class="resume-section" id="previewSkillsSection">
+                        <h2 class="section-title">Skills</h2>
+                        <hr>
+                        <div id="previewSkills" class="skills-grid">
+                            <!-- Populated by JS -->
+                        </div>
+                    </section>
+
+                    <!-- Custom Sections Preview -->
+                    <div id="previewCustomSections">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
