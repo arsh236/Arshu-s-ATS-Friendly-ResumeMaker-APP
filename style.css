@@ -442,70 +442,115 @@ textarea {
 /* Mobile Responsiveness (Updated) */
 @media (max-width: 1024px) {
 
-    /* Increased breakpoint */
+    /* Layout Stack */
     body {
         height: auto;
         overflow-y: auto;
-        /* Enable global scroll */
+        display: block;
+        /* Remove flex constraint on body for mobile */
     }
 
     .app-container {
-        flex-direction: column;
+        display: block;
+        /* Stack vertically*/
         height: auto;
         overflow: visible;
     }
 
+    /* Editor styling on mobile */
     .editor-panel {
         width: 100%;
         height: auto;
+        /* Let content dictate height */
+        max-height: none;
         border-right: none;
-        border-bottom: 1px solid var(--border-color);
+        border-bottom: 5px solid var(--border-color);
         position: relative;
         z-index: 20;
     }
 
     .resume-form {
-        padding: 20px;
-        overflow: visible;
-        /* Let it expand naturally */
+        max-height: 60vh;
+        /* Limit height so user can scroll to preview */
+        overflow-y: auto;
+        padding: 15px;
     }
 
+    /* Floating action button style for download on mobile? 
+       Or just keep it as is. */
+
+    /* Preview Area */
     .preview-area {
         height: auto;
         overflow: visible;
-        padding-bottom: 50px;
+        padding: 0;
+        background: #ced6e0;
+        /* Slightly darker to show paper contrast */
     }
 
     .preview-toolbar {
         position: sticky;
         top: 0;
         z-index: 100;
-        border-bottom: 1px solid #e2e8f0;
+        border-bottom: 1px solid #cbd5e1;
+        padding: 0 15px;
+        height: 50px;
     }
 
+    .preview-label {
+        display: none;
+        /* Hide label to save space */
+    }
+
+    /* Resume Container */
     .resume-container-wrapper {
-        padding: 20px 10px;
-        display: block;
+        padding: 20px 0;
+        display: flex;
+        justify-content: center;
         overflow-x: auto;
-        /* Handle wide resumes */
+        background: var(--app-bg);
+        min-height: 500px;
     }
 
-    /* Scale down resume on mobile to fit screen width */
+    /* Responsive Resume Sheet Scaling */
     .resume-sheet {
+        /* Reset any fixed widths that might break layout */
         min-width: var(--resume-width);
-        transform-origin: top left;
-        transform: scale(0.5);
-        /* Force scale down */
-        margin-bottom: -50%;
-        /* Remove huge gap from scaling */
+        /* Use zoom for mobile browsers that support it, or transform fallback */
+        transform-origin: top center;
+        transform: scale(0.45);
+        /* Default tablet scale */
+        margin-bottom: -130%;
+        /* Compensate for blank space */
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     }
 }
 
-/* Very Small Screens */
-@media (max-width: 480px) {
+/* Phones */
+@media (max-width: 600px) {
+    .resume-form {
+        max-height: 50vh;
+    }
+
     .resume-sheet {
-        transform: scale(0.4);
-        margin-bottom: -70%;
+        transform: scale(0.35);
+        /* Smaller scale for phones */
+        margin-bottom: -180%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .resume-container-wrapper {
+        justify-content: center;
+        overflow: hidden;
+        /* Hide horizontal scrollbar if centered */
+    }
+
+    /* Fix Input Zoom on iOS */
+    input,
+    textarea,
+    select {
+        font-size: 16px !important;
     }
 }
 
