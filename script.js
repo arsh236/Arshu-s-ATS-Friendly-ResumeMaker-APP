@@ -159,8 +159,31 @@ document.addEventListener('DOMContentLoaded', () => {
         buttons.zoomOut.addEventListener('click', () => adjustZoom(-0.1));
 
         // Accordion (Delegated for dynamic content)
-        // Note: For static sections, we can attach initially. For dynamic, we handle in render.
         attachAccordionListeners();
+
+        // Mobile Tabs
+        const tabEditor = document.getElementById('tabEditor');
+        const tabPreview = document.getElementById('tabPreview');
+        const appContainer = document.querySelector('.app-container');
+
+        if (tabEditor && tabPreview) {
+            // Set initial state
+            appContainer.classList.add('show-editor');
+
+            tabEditor.addEventListener('click', () => {
+                appContainer.classList.remove('show-preview');
+                appContainer.classList.add('show-editor');
+                tabEditor.classList.add('active');
+                tabPreview.classList.remove('active');
+            });
+
+            tabPreview.addEventListener('click', () => {
+                appContainer.classList.remove('show-editor');
+                appContainer.classList.add('show-preview');
+                tabPreview.classList.add('active');
+                tabEditor.classList.remove('active');
+            });
+        }
     }
 
     function attachAccordionListeners() {
