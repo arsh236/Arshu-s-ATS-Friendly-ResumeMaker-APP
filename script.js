@@ -88,34 +88,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function initSortables() {
         // 1. Layout Reordering (Sidebar list)
-        new Sortable(document.getElementById('sectionSortableList'), {
-            animation: 150,
-            ghostClass: 'sortable-ghost',
-            onEnd: function (evt) {
-                // Reorder DOM in Preview
-                const orderIds = Array.from(evt.to.children).map(li => li.getAttribute('data-id'));
-                const previewContainer = document.getElementById('resumePreview');
-                const header = document.querySelector('.resume-header');
+        const sortableList = document.getElementById('sectionSortableList');
+        if (sortableList) {
+            new Sortable(sortableList, {
+                animation: 150,
+                handle: '.sortable-item', // Drag by the item itself
+                ghostClass: 'sortable-ghost',
+                onEnd: function (evt) {
+                    // Reorder DOM in Preview
+                    const orderIds = Array.from(evt.to.children).map(li => li.getAttribute('data-id'));
+                    const previewContainer = document.getElementById('resumePreview');
 
-                // We keep header at top always
-                orderIds.forEach(id => {
-                    const el = document.getElementById(id);
-                    if (el) previewContainer.appendChild(el);
-                });
-            }
-        });
+                    // We keep header at top always
+                    orderIds.forEach(id => {
+                        const el = document.getElementById(id);
+                        if (el) previewContainer.appendChild(el);
+                    });
+                }
+            });
+        }
 
-        // 2. Experience Reordering (No-op in preview logic for now, just visual in sidebar?)
-        // Actually, we need to update STATE order if we drag items in sidebar.
-        // Let's implement Sortable for sidebar lists BUT we need to sync with state.
+        // 2. Experience/Education/Custom Reordering
+        // Fix for Mobile: Restrict handle to Header only, and filter out the Remove button.
 
-        // Helper for state sync
-        const setupListSortable = (elId, stateKey, renderFn) => {
+        const setupListSortable = (elId, stateKey) => {
             const el = document.getElementById(elId);
             if (!el) return;
             new Sortable(el, {
                 animation: 150,
-                handle: '.form-section', // Drag by the whole card or header? Card is better.
+                handle: '.section-header', // ONLY drag by header
+                filter: 'button', // Don't drag when clicking buttons (trash icon)
+                preventOnFilter: false, // Allow button click to work
                 ghostClass: 'sortable-ghost',
                 onEnd: function (evt) {
                     const oldIndex = evt.oldIndex;
@@ -123,16 +126,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Move item in state array
                     const item = state[stateKey].splice(oldIndex, 1)[0];
                     state[stateKey].splice(newIndex, 0, item);
-                    // Re-render Preview only (Updating Sidebar form would kill drag)
+                    // Re-render Preview only
                     updatePreview();
                 }
             });
         };
-
-        // Note: For this to work, the sidebar lists (experienceList div) must contain 
-        // the direct draggable children. currently renderForm produces a string of HTML.
-        // We set innerHTML. SortableJS works on live DOM. 
-        // So applied to containers.experience, it works on the .form-section divs.
 
         setupListSortable('experienceList', 'experience');
         setupListSortable('educationList', 'education');
